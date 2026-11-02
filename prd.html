@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐾</text></svg>">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>宠采通 · 宠物用品采购平台 需求规格说明书</title>
+<style>
+  :root{
+    --brand:#2563eb; --brand-600:#1d4ed8; --brand-50:#eff6ff;
+    --accent:#f97316; --accent-50:#fff7ed;
+    --ok:#16a34a; --ok-50:#f0fdf4;
+    --warn:#d97706; --warn-50:#fffbeb;
+    --err:#dc2626; --err-50:#fef2f2;
+    --t1:#111827; --t2:#374151; --t3:#6b7280; --t4:#9ca3af;
+    --bd:#e5e7eb; --bd-2:#d1d5db; --bg:#f6f8fb; --card:#ffffff;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--t1);
+    font-family:"PingFang SC","Microsoft YaHei","Helvetica Neue",Arial,sans-serif;
+    font-size:14px;line-height:1.75;-webkit-font-smoothing:antialiased}
+  a{color:var(--brand);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .layout{display:flex;max-width:1440px;margin:0 auto;align-items:flex-start}
+  /* 侧边目录 */
+  .toc{position:sticky;top:0;width:280px;flex:0 0 280px;height:100vh;overflow-y:auto;
+    background:var(--card);border-right:1px solid var(--bd);padding:24px 16px 60px}
+  .toc h1{font-size:17px;margin:0 0 4px}
+  .toc .sub{font-size:12px;color:var(--t3);margin-bottom:18px}
+  .toc ol{list-style:none;margin:0;padding:0;font-size:13px}
+  .toc li{margin:2px 0}
+  .toc a{display:block;padding:6px 10px;border-radius:6px;color:var(--t2)}
+  .toc a:hover{background:var(--brand-50);color:var(--brand);text-decoration:none}
+  .toc .lv2{padding-left:26px;font-size:12.5px;color:var(--t3)}
+  .toc .grp{margin-top:14px;padding:0 10px;font-size:11px;letter-spacing:1px;color:var(--t4);font-weight:700}
+  /* 正文 */
+  main{flex:1;min-width:0;padding:36px 44px 100px;background:var(--bg)}
+  .doc-head{background:linear-gradient(120deg,#1e3a8a,#2563eb 55%,#3b82f6);
+    color:#fff;border-radius:14px;padding:30px 34px;margin-bottom:26px}
+  .doc-head h1{font-size:27px;margin:0 0 8px;letter-spacing:.5px}
+  .doc-head p{margin:0;opacity:.9;font-size:13.5px}
+  .meta{display:flex;gap:26px;flex-wrap:wrap;margin-top:18px;font-size:12.5px;opacity:.95}
+  .meta b{font-weight:600;opacity:.8;margin-right:6px}
+  section{background:var(--card);border:1px solid var(--bd);border-radius:12px;
+    padding:26px 30px;margin-bottom:20px}
+  h2{font-size:19px;margin:0 0 14px;padding-bottom:10px;border-bottom:2px solid var(--brand-50);
+    display:flex;align-items:center;gap:10px}
+  h2 .n{background:var(--brand);color:#fff;width:26px;height:26px;border-radius:7px;
+    font-size:13px;display:inline-flex;align-items:center;justify-content:center}
+  h3{font-size:15.5px;margin:22px 0 8px;color:var(--brand-600);
+    border-left:3px solid var(--brand);padding-left:9px}
+  h4{font-size:14px;margin:16px 0 6px;color:var(--t1)}
+  p{margin:8px 0;color:var(--t2)}
+  ul,ol{margin:8px 0;padding-left:22px;color:var(--t2)}
+  li{margin:4px 0}
+  table{width:100%;border-collapse:collapse;margin:10px 0 6px;font-size:13px}
+  th,td{border:1px solid var(--bd);padding:8px 10px;text-align:left;vertical-align:top}
+  th{background:#f3f6fb;color:var(--t1);font-weight:600;white-space:nowrap}
+  tbody tr:nth-child(even) td{background:#fcfdff}
+  td.c{text-align:center;white-space:nowrap}
+  code{background:#f1f5f9;border:1px solid var(--bd);border-radius:4px;padding:1px 5px;
+    font-family:Consolas,Menlo,monospace;font-size:12.5px;color:#b91c1c}
+  .tag{display:inline-block;padding:1px 7px;border-radius:10px;font-size:11.5px;line-height:18px;
+    border:1px solid transparent;white-space:nowrap}
+  .p0{background:var(--err-50);color:var(--err);border-color:#fecaca}
+  .p1{background:var(--warn-50);color:var(--warn);border-color:#fde68a}
+  .p2{background:#f1f5f9;color:var(--t3);border-color:var(--bd)}
+  .note{background:var(--brand-50);border-left:4px solid var(--brand);border-radius:6px;
+    padding:10px 14px;margin:10px 0;font-size:13px;color:#1e3a8a}
+  .warn{background:var(--warn-50);border-left:4px solid var(--warn);border-radius:6px;
+    padding:10px 14px;margin:10px 0;font-size:13px;color:#92400e}
+  /* 流程 / 状态机 */
+  .flow{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin:12px 0;padding:14px;
+    background:#fafbfe;border:1px dashed var(--bd-2);border-radius:10px}
+  .node{background:#fff;border:1px solid var(--bd-2);border-radius:8px;padding:7px 13px;
+    font-size:12.5px;box-shadow:0 1px 2px rgba(16,24,40,.04)}
+  .node.blue{background:var(--brand-50);border-color:#bfdbfe;color:#1e40af}
+  .node.green{background:var(--ok-50);border-color:#bbf7d0;color:#15803d}
+  .node.orange{background:var(--accent-50);border-color:#fed7aa;color:#c2410c}
+  .node.red{background:var(--err-50);border-color:#fecaca;color:#b91c1c}
+  .node.gray{background:#f3f4f6;color:var(--t3)}
+  .arw{color:var(--t4);font-size:13px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .card{border:1px solid var(--bd);border-radius:10px;padding:14px 16px;background:#fff}
+  .card h5{margin:0 0 6px;font-size:13.5px;color:var(--t1)}
+  .card p{margin:0;font-size:12.5px;color:var(--t3);line-height:1.65}
+  .kv{display:grid;grid-template-columns:120px 1fr;gap:4px 12px;font-size:13px;margin:8px 0}
+  .kv dt{color:var(--t3)}
+  .kv dd{margin:0;color:var(--t2)}
+  .legend{font-size:12px;color:var(--t3);margin:6px 0 0}
+  .foot{text-align:center;color:var(--t4);font-size:12px;padding:20px}
+  @media print{.toc{display:none}main{padding:0}section{break-inside:avoid;box-shadow:none}}
+</style>
+</head>
+<body>
+<div class="layout">
+<nav class="toc">
+  <h1>宠采通 需求规格说明书</h1>
+  <div class="sub">Pet Supplies Procurement Platform · PRD v1.3</div>
+  <div class="grp">基础</div>
+  <ol>
+    <li><a href="#s1">文档信息与修订记录</a></li>
+    <li><a href="#s2">项目概述与目标</a></li>
+    <li><a href="#s3">角色定义与权限矩阵</a></li>
+    <li><a href="#s4">核心业务流程总览</a></li>
+  </ol>
+  <div class="grp">功能需求</div>
+  <ol>
+    <li><a href="#s5">供应商端（S）</a></li>
+    <li><a href="#s6">零售商端（R）</a></li>
+    <li><a href="#s7">平台管理端（P）</a></li>
+    <li><a href="#s8">公共与支撑能力（C）</a></li>
+  </ol>
+  <div class="grp">设计</div>
+  <ol>
+    <li><a href="#s9">核心状态机定义</a></li>
+    <li><a href="#s10">数据模型（主要实体）</a></li>
+    <li><a href="#s11">页面清单与原型索引</a></li>
+    <li><a href="#s12">非功能需求</a></li>
+    <li><a href="#s13">分期规划与里程碑</a></li>
+    <li><a href="#s14">附录：业务规则与风控</a></li>
+  </ol>
+</nav>
+
+<main>
+<div class="doc-head">
+  <h1>宠采通 · 宠物用品采购平台　需求规格说明书（PRD）</h1>
+  <p>面向「供应商 → 平台 → 零售商」三方协同的宠物用品 B2B 采购交易平台：入驻准入、商品上架、资质控价、在线交易、支付结算、物流履约与售后客服全链路。</p>
+  <div class="meta">
+    <span><b>文档版本</b> v1.3</span>
+    <span><b>编制日期</b> 2026-11-02</span>
+    <span><b>适用阶段</b> 需求评审 / 原型确认</span>
+    <span><b>配套交付</b> <a href="prototype/index.html" style="color:#fff;text-decoration:underline">可交互高保真原型</a> · <a href="index.html" style="color:#fff;text-decoration:underline">公开访问门户</a></span>
+  </div>
+</div>
+
+<!-- 1 -->
+<section id="s1">
+<h2><span class="n">1</span>文档信息与修订记录</h2>
+<table>
+  <thead><tr><th style="width:70px">版本</th><th style="width:110px">日期</th><th style="width:90px">编制</th><th>修订说明</th><th style="width:80px">状态</th></tr></thead>
+  <tbody>
+    <tr><td class="c">v1.3</td><td class="c">2026-11-02</td><td class="c">产品组</td><td>零售端简化：移除「会员等级」与「账期 / 授信」相关能力（等级差异化定价、账期支付、授信额度与风控），所有认证零售商统一拿货价与在线支付方式；同步更新支付方式、功能清单、数据模型、里程碑与风控配置</td><td class="c"><span class="tag p0">待评审</span></td></tr>
+    <tr><td class="c">v1.2</td><td class="c">2026-11-02</td><td class="c">产品组</td><td>商品示意整体替换为宠物用品业态（主粮 / 零食 / 猫砂清洁 / 保健 / 玩具 / 牵引出行 / 窝垫服饰 / 洗护美容），同步更新资质证照、角色与商品示例；新增公开访问链接与配套可交互原型说明</td><td class="c"><span class="tag p0">待评审</span></td></tr>
+    <tr><td class="c">v1.0</td><td class="c">2026-11-02</td><td class="c">产品组</td><td>首版：三方角色、五大核心链路（入驻 / 上架 / 交易 / 履约 / 售后）、功能清单与状态机定义</td><td class="c"><span class="tag p0">待评审</span></td></tr>
+    <tr><td class="c">v0.9</td><td class="c">2026-10-28</td><td class="c">产品组</td><td>业务调研与角色访谈结论整合，确定平台自营独代商品模式</td><td class="c"><span class="tag p2">已归档</span></td></tr>
+  </tbody>
+</table>
+<h3>名词术语</h3>
+<table>
+  <thead><tr><th style="width:120px">术语</th><th>说明</th></tr></thead>
+  <tbody>
+    <tr><td>SPU / SKU</td><td>SPU 为商品聚合（如"皇家 成猫全价粮 2kg"），SKU 为具体规格销售单元（如"2kg*6 袋整箱"）</td></tr>
+    <tr><td>拿货价</td><td>仅供通过资质审核的零售商可见的采购价，与前端零售价、划线价区隔</td></tr>
+    <tr><td>阶梯价</td><td>按采购数量区间设定的价格，如 1-49 箱 ¥28 / 50-199 箱 ¥26 / ≥200 箱 ¥24.5</td></tr>
+    <tr><td>MOQ</td><td>Minimum Order Quantity，最小起订量，同时支持最小起订金额</td></tr>
+    <tr><td>独代商品</td><td>平台自有（买断 / 独家代理）商品，由平台自行上传、定价与发货，供应商不可见其成本</td></tr>
+    <tr><td>资质审核</td><td>对主体营业执照、经营许可证、品牌授权、法人身份等材料的合规校验流程</td></tr>
+    <tr><td>结算单</td><td>按结算周期（T+N / 月结）生成的、平台与供应商之间的货款对账凭证</td></tr>
+    <tr><td>分账</td><td>支付成功后按订单结构（货款、平台服务费、运费）拆分入账的过程</td></tr>
+  </tbody>
+</table>
+</section>
+
+<!-- 2 -->
+<section id="s2">
+<h2><span class="n">2</span>项目概述与目标</h2>
+<h3>2.1 业务背景</h3>
+<p>宠物零售终端（宠物店、宠物医院、商超宠物专区、电商宠物店铺）的采购长期依赖多级经销商，存在<strong>价格不透明、起订量高、品类分散、对账低效、售后无保障</strong>等痛点。平台通过聚合品牌方/经销商（供应商）与终端门店（零售商），以线上化的方式完成"看得见价格 → 下得了单 → 付得了款 → 查得到物流 → 退得了货"的完整闭环。</p>
+
+<h3>2.2 产品定位</h3>
+<div class="grid3">
+  <div class="card"><h5>供应商（供给侧）</h5><p>品牌方 / 一级经销商 / 工厂。提供货品与价格，接受平台审核与履约考核，获取订单与结算。</p></div>
+  <div class="card"><h5>零售商（需求侧）</h5><p>各类终端门店。通过资质认证后可见拿货价，享受一站式比价、下单、物流追踪与售后。</p></div>
+  <div class="card"><h5>平台（运营侧）</h5><p>规则制定者与服务方。负责准入审核、商品治理、自营独代经营、资金与物流履约保障、纠纷仲裁。</p></div>
+</div>
+
+<h3>2.3 业务目标（KPI）</h3>
+<table>
+  <thead><tr><th style="width:150px">指标</th><th style="width:120px">目标值</th><th>口径说明</th></tr></thead>
+  <tbody>
+    <tr><td>供应商入驻转化</td><td>≥ 60%</td><td>提交入驻申请 → 审核通过的比例，审核时效 ≤ 2 个工作日</td></tr>
+    <tr><td>商品上架审核时效</td><td>≤ 4 小时</td><td>供应商提交 → 平台审核完成的 P90 时长</td></tr>
+    <tr><td>零售商复购率</td><td>≥ 45%</td><td>近 90 天内下单 ≥ 2 次的零售商占比</td></tr>
+    <tr><td>订单履约准时率</td><td>≥ 95%</td><td>承诺时效内完成签收的订单占比</td></tr>
+    <tr><td>售后完结率</td><td>≥ 90% / 72h</td><td>售后工单 72 小时内完结占比</td></tr>
+    <tr><td>独代商品毛利贡献</td><td>≥ 25%</td><td>独代商品毛利 / 平台总毛利</td></tr>
+  </tbody>
+</table>
+
+<h3>2.4 用户画像与场景</h3>
+<table>
+  <thead><tr><th style="width:110px">角色</th><th style="width:150px">典型用户</th><th>核心场景</th><th style="width:130px">关键诉求</th></tr></thead>
+  <tbody>
+    <tr><td>供应商</td><td>某宠物品牌区域经销商（运营 1-3 人）</td><td>批量导入 SKU、设置阶梯价、处理门店订单与发货、月度对账开票</td><td>铺货效率、回款确定性</td></tr>
+    <tr><td>零售商</td><td>宠物店店主（手机为主）</td><td>补货比价、凑单达到起订量、微信支付、查看快递到哪了、临期破损退货</td><td>低价、省心、可追溯</td></tr>
+    <tr><td>平台运营</td><td>品类运营 / 审核专员 / 客服 / 财务</td><td>审核资质与商品、上架独代品、处理异常订单与退款仲裁、配置活动与公告</td><td>效率、风控、数据可追溯</td></tr>
+  </tbody>
+</table>
+</section>
+
+<!-- 3 -->
+<section id="s3">
+<h2><span class="n">3</span>角色定义与权限矩阵</h2>
+<h3>3.1 角色定义</h3>
+<table>
+  <thead><tr><th style="width:110px">角色</th><th style="width:130px">账号体系</th><th>权限边界</th><th style="width:180px">准入条件</th></tr></thead>
+  <tbody>
+    <tr><td><b>供应商</b></td><td>企业主账号 + 子账号（运营/财务/客服），支持角色授权</td><td>仅可查看与操作<b>本企业</b>的商品、订单、结算、售后数据</td><td>营业执照 + 行业许可证 + 品牌授权 + 对公账户，审核通过后开通</td></tr>
+    <tr><td><b>零售商</b></td><td>门店主账号 + 店员子账号</td><td>仅可查看<b>本主体</b>订单与售后；<b>资质未通过时不可见拿货价且不可下单</b></td><td>营业执照 / 门店照片（个体工商户可持身份证），审核通过后解锁交易权限</td></tr>
+    <tr><td><b>平台管理员</b></td><td>超级管理员 + 运营/审核/客服/财务/仓储 等职能角色（RBAC 细粒度授权）</td><td>可查看全平台数据（敏感字段如成本价按角色脱敏），具备审核、仲裁、配置权限</td><td>内部账号，由超管开通，双因子认证 + 操作留痕</td></tr>
+  </tbody>
+</table>
+
+<h3>3.2 权限矩阵（● 全部　◐ 受限　○ 无）</h3>
+<table>
+  <thead><tr><th style="width:180px">能力</th><th class="c">供应商</th><th class="c">零售商</th><th class="c">平台管理员</th><th style="width:200px">备注</th></tr></thead>
+  <tbody>
+    <tr><td>查看商品（零售价）</td><td class="c">●</td><td class="c">●</td><td class="c">●</td><td>游客可浏览但价格隐藏</td></tr>
+    <tr><td>查看拿货价 / 阶梯价</td><td class="c">○</td><td class="c">◐</td><td class="c">●</td><td>零售商需资质审核通过</td></tr>
+    <tr><td>创建 / 编辑商品</td><td class="c">●</td><td class="c">○</td><td class="c">●</td><td>平台仅可创建独代商品</td></tr>
+    <tr><td>商品上架审核</td><td class="c">○</td><td class="c">○</td><td class="c">●</td><td>供应商仅可提交审核</td></tr>
+    <tr><td>下单 / 支付</td><td class="c">○</td><td class="c">◐</td><td class="c">○</td><td>资质通过方可下单</td></tr>
+    <tr><td>发货 / 维护运单</td><td class="c">●</td><td class="c">○</td><td class="c">●</td><td>独代商品由平台/云仓发货</td></tr>
+    <tr><td>查看物流轨迹</td><td class="c">◐</td><td class="c">●</td><td class="c">●</td><td>—</td></tr>
+    <tr><td>发起退款 / 售后</td><td class="c">◐</td><td class="c">●</td><td class="c">●</td><td>供应商仅可处理本方售后</td></tr>
+    <tr><td>退款审核 / 平台介入</td><td class="c">○</td><td class="c">○</td><td class="c">●</td><td>仲裁结果对双方生效</td></tr>
+    <tr><td>结算 / 提现</td><td class="c">◐</td><td class="c">○</td><td class="c">●</td><td>供应商提现需财务复核</td></tr>
+    <tr><td>平台配置（Banner/公告/类目/规则）</td><td class="c">○</td><td class="c">○</td><td class="c">●</td><td>—</td></tr>
+    <tr><td>查看平台经营数据大盘</td><td class="c">○</td><td class="c">○</td><td class="c">●</td><td>供应商仅看自身经营看板</td></tr>
+  </tbody>
+</table>
+<div class="note"><b>价格可见性规则（核心）：</b>未登录 / 未通过资质审核的零售商访问商品详情时，价格区展示「资质认证后可见拿货价」并引导认证；拿货价、阶梯价、库存深度均不下发至前端，避免接口层泄露。</div>
+</section>
+
+<!-- 4 -->
+<section id="s4">
+<h2><span class="n">4</span>核心业务流程总览</h2>
+
+<h3>4.1 供应商入驻链路</h3>
+<div class="flow">
+  <span class="node gray">注册账号</span><span class="arw">→</span>
+  <span class="node blue">填写企业信息</span><span class="arw">→</span>
+  <span class="node blue">上传资质材料</span><span class="arw">→</span>
+  <span class="node blue">签署平台协议</span><span class="arw">→</span>
+  <span class="node orange">平台初审</span><span class="arw">→</span>
+  <span class="node orange">资质核验（工商/风控）</span><span class="arw">→</span>
+  <span class="node green">通过：开通后台</span><span class="arw">／</span>
+  <span class="node red">驳回：原因回填可重提</span>
+</div>
+
+<h3>4.2 商品上架链路</h3>
+<div class="flow">
+  <span class="node blue">供应商创建商品</span><span class="arw">→</span>
+  <span class="node orange">平台内容审核</span><span class="arw">→</span>
+  <span class="node orange">价格与合规审核</span><span class="arw">→</span>
+  <span class="node green">上架（在售）</span><span class="arw">→</span>
+  <span class="node gray">零售商可见可购</span>
+</div>
+<p class="legend">※ 平台自营独代商品跳过供应商环节：平台运营直接创建 → 内部复核 → 上架，成本价字段仅财务/超管可见。</p>
+
+<h3>4.3 交易履约链路</h3>
+<div class="flow">
+  <span class="node blue">加购</span><span class="arw">→</span>
+  <span class="node blue">校验 MOQ / 库存 / 资质</span><span class="arw">→</span>
+  <span class="node blue">提交订单</span><span class="arw">→</span>
+  <span class="node orange">在线支付</span><span class="arw">→</span>
+  <span class="node orange">支付成功（分账挂账）</span><span class="arw">→</span>
+  <span class="node blue">供应商接单备货</span><span class="arw">→</span>
+  <span class="node blue">发货回填运单</span><span class="arw">→</span>
+  <span class="node green">物流在途（轨迹可查）</span><span class="arw">→</span>
+  <span class="node green">确认收货</span><span class="arw">→</span>
+  <span class="node gray">到账结算 / 可开票</span>
+</div>
+<p class="legend">※ 超时未支付（默认 30 分钟）自动关单并释放库存；超时未发货（默认 48 小时）触发预警与商户扣分，超时可由零售商发起退款。</p>
+
+<h3>4.4 售后退款链路</h3>
+<div class="flow">
+  <span class="node blue">零售商发起售后（仅退款 / 退货退款）</span><span class="arw">→</span>
+  <span class="node orange">供应商处理（48h）</span><span class="arw">→</span>
+  <span class="node green">同意：退货 → 验货 → 退款</span><span class="arw">／</span>
+  <span class="node red">拒绝</span><span class="arw">→</span>
+  <span class="node orange">平台介入仲裁</span><span class="arw">→</span>
+  <span class="node green">判定退款 / 驳回</span><span class="arw">→</span>
+  <span class="node gray">原路退回 + 结算冲抵</span>
+</div>
+</section>
+
+<!-- 5 -->
+<section id="s5">
+<h2><span class="n">5</span>供应商端功能需求（S）</h2>
+
+<h3>S-01 入驻与资质中心</h3>
+<table>
+  <thead><tr><th style="width:70px">编号</th><th style="width:130px">功能点</th><th>需求描述与业务规则</th><th style="width:60px">优先级</th><th style="width:130px">原型页面</th></tr></thead>
+  <tbody>
+    <tr><td>S-01-01</td><td>企业信息登记</td><td>填写企业全称、统一社会信用代码、所属行业、主营品类、所在区域、联系人、对公账户。统一社会信用代码唯一性校验，自动带出企业名（对接工商核验）</td><td class="c"><span class="tag p0">P0</span></td><td>供应商 / 入驻申请</td></tr>
+    <tr><td>S-01-02</td><td>资质材料上传</td><td>必传：营业执照、法人身份证正反面、开户许可证；按类目选传：宠物饲料生产许可证、兽药经营许可证、动物诊疗许可证、进口宠物食品备案、品牌授权书、产品质检报告。支持 JPG/PDF，单文件 ≤ 10MB，OCR 自动识别证号与有效期</td><td class="c"><span class="tag p0">P0</span></td><td>供应商 / 入驻申请</td></tr>
+    <tr><td>S-01-03</td><td>证照有效期管理</td><td>证照到期前 30/7/1 天站内信 + 短信提醒；过期后自动限制新品上架与提现，已有商品进入"资质异常"预警</td><td class="c"><span class="tag p1">P1</span></td><td>供应商 / 资质中心</td></tr>
+    <tr><td>S-01-04</td><td>审核进度与驳回重提</td><td>展示审核状态、审核人意见、驳回原因；支持在原申请基础上修改并重新提交，次数不限，重提记录留痕</td><td class="c"><span class="tag p0">P0</span></td><td>供应商 / 资质中心</td></tr>
+    <tr><td>S-01-05</td><td>协议与保证金</td><td>在线签署《平台服务协议》《商品质量承诺》；按类目配置保证金，支持在线缴纳凭证上传</td><td class="c"><span class="tag p1">P1</span></td><td>供应商 / 入驻申请</td></tr>
+    <tr><td>S-01-06</td><td>子账号与角色</td><td>主账号可创建运营/财务/客服子账号，按菜单与操作权限授权，支持启停与操作日志查询</td><td class="c"><span class="tag p1">P1</span></td><td>供应商 / 账号设置</td></tr>
+  </tbody>
+</table>
+
+<h3>S-02 商品与品类管理</h3>
+<table>
+  <thead><tr><th style="width:70px">编号</th><th style="width:130px">功能点</th><th>需求描述与业务规则</th><th style="width:60px">优先级</th><th style="width:130px">原型页面</th></tr></thead>
+  <tbody>
+    <tr><td>S-02-01</td><td>品类申报</td><td>入驻时选择经营品类（三级类目），仅可在已申报品类内创建商品；新增品类需提交品类扩展申请并经平台审核（本平台经营类目示例：宠物主粮、宠物零食、牵引出行、宠物保健、猫砂清洁、宠物玩具、洗护美容、窝垫服饰）</td><td class="c"><span class="tag p0">P0</span></td><td>供应商 / 商品管理</td></tr>
+    <tr><td>S-02-02</td><td>商品创建</td><td>字段：商品标题、类目、品牌、主图 ≥ 3 张、详情图文、规格（SKU）、条形码、产地、适用对象、成分表、喂食建议、保质期、贮存条件、箱规（箱内件数）、MOQ、起订金额、供货价、建议零售价、库存、发货地、承诺时效、售后说明</td><td class="c"><span class="tag p0">P0</span></td><td>供应商 / 新增商品</td></tr>
+    <tr><td>S-02-03</td><td>阶梯价格</td><td>支持按数量区间设置 1-5 档阶梯价（如 1-49 / 50-199 / ≥200），下单时按量自动匹配</td><td class="c"><span class="tag p0">P0</span></td><td>供应商 / 新增商品</td></tr>
+    <tr><td>S-02-04</td><td>库存管理</td><td>支持手动维护与 Excel 批量导入；下单锁库存、支付成功扣减、取消/退款回滚；低于安全库存提醒</td><td class="c"><span class="tag p0">P0</span></td><td>供应商 / 商品管理</td></tr>
+    <tr><td>S-02-05</td><td>提交审核与上下架</td><td>新增 / 编辑价格与标题后需重新提交审核；商品状态：草稿 → 待审核 → 审核通过（上架）/ 驳回；支持自主下架（在售 → 已下架），下架不影响历史订单</td><td class="c"><span class="tag p0">P0</span></td><td>供应商 / 商品管理</td></tr>
+    <tr><td>S-02-06</td><td>批量导入导出</td><td>提供标准模板，支持单次 ≤ 5000 行导入，导入前校验必填与类目合法性，输出错误行报告</td><td class="c"><span class="tag p1">P1</span></td><td>供应商 / 商品管理</td></tr>
+    <tr><td>S-02-07</td><td>促销与券</td><td>可报名平台活动，或设置商品级满减/满赠（需平台审核）；活动价不得高于近 30 日最低供货价（防先涨后降）</td><td class="c"><span class="tag p2">P2</span></td><td>供应商 / 营销中心</td></tr>
+  </tbody>
+</table>
+
+<h3>S-03 订单与履约</h3>
+<table>
+  <thead><tr><th style="width:70px">编号</th><th style="width:130px">功能点</th><th>需求描述与业务规则</th><th style="width:60px">优先级</th><th style="width:130px">原型页面</th></tr></thead>
+  <tbody>
+    <tr><td>S-03-01</td><td>订单列表与筛选</td><td>按订单号、商品、零售商、状态、时间筛选；状态：待付款 / 待接单 / 备货中 / 待发货 / 已发货 / 已签收 / 已完成 / 已关闭 / 退款中</td><td class="c"><span class="tag p0">P0</span></td><td>供应商 / 订单管理</td></tr>
+    <tr><td>S-03-02</td><td>接单与备货</td><td>48 小时内接单，超时自动触发平台预警并可强制退款；缺货时可发起"缺货协商"（部分发货 / 换规格）需零售商同意</td><td class="c"><span class="tag p0">P0</span></td><td>供应商 / 订单详情</td></tr>
+    <tr><td>S-03-03</td><td>发货与运单</td><td>支持单条 / 批量发货、选择物流公司、填写运单号、上传发货凭证；对接平台物流网关自动回传轨迹；支持拆单发货（多包裹）</td><td class="c"><span class="tag p0">P0</span></td><td>供应商 / 订单详情 - 发货</td></tr>
+    <tr><td>S-03-04</td><td>物流轨迹查看</td><td>展示承运商、运单号、节点时间轴、异常标记（滞留 / 拒收 / 地址异常）</td><td class="c"><span class="tag p0">P0</span></td><td>供应商 / 订单详情</td></tr>
+    <tr><td>S-03-05</td><td>订单备注与沟通</td><td>内部备注（仅本企业可见）+ 与零售商的订单会话（计入客服工单）</td><td class="c"><span class="tag p1">P1</span></td><td>供应商 / 订单详情</td></tr>
+  </tbody>
+</table>
+
+<h3>S-04 售后、评价与结算</h3>
+<table>
+  <thead><tr><th style="width:70px">编号</th><th style="width:130px">功能点</th><th>需求描述与业务规则</th><th style="width:60px">优先级</th><th style="width:130px">原型页面</th></tr></thead>
+  <tbody>
+    <tr><td>S-04-01</td><td>售后处理</td><td>处理零售商的仅退款 / 退货退款申请：同意 / 拒绝（须填原因 + 凭证）；退货需确认收货地址与验货结果，验货不通过可拒绝并申请平台介入</td><td class="c"><span class="tag p0">P0</span></td><td>供应商 / 售后管理</td></tr>
+    <tr><td>S-04-02</td><td>评价与申诉</td><td>查看商品与履约评分；对差评可申诉，平台复核后可屏蔽违规评价</td><td class="c"><span class="tag p2">P2</span></td><td>供应商 / 评价管理</td></tr>
+    <tr><td>S-04-03</td><td>结算对账</td><td>按 T+N 或月结生成结算单：订单明细、退款冲抵、平台服务费、运费、实付金额；支持在线确认与导出</td><td class="c"><span class="tag p0">P0</span></td><td>供应商 / 结算中心</td></tr>
+    <tr><td>S-04-04</td><td>提现与发票</td><td>绑定对公账户发起提现（财务复核到账）；支持开具增值税发票，发票信息与结算单关联</td><td class="c"><span class="tag p1">P1</span></td><td>供应商 / 结算中心</td></tr>
+    <tr><td>S-04-05</td><td>经营看板</td><td>销售额、订单量、动销 SKU、退款率、履约时效、店铺评分；支持按日/周/月与品类维度</td><td class="c"><span class="tag p1">P1</span></td><td>供应商 / 工作台</td></tr>
+  </tbody>
+</table>
+</section>
+
+<!-- 6 -->
+<section id="s6">
+<h2><span class="n">6</span>零售商端功能需求（R）</h2>
+
+<h3>R-01 注册与资质认证</h3>
+<table>
+  <thead><tr><th style="width:70px">编号</th><th style="width:130px">功能点</th><th>需求描述与业务规则</th><th style="width:60px">优先级</th><th style="width:130px">原型页面</th></tr></thead>
+  <tbody>
+    <tr><td>R-01-01</td><td>注册登录</td><td>手机号验证码注册/登录，支持微信授权绑定；企业认证前为"游客/待认证"状态</td><td class="c"><span class="tag p0">P0</span></td><td>零售商 / 登录注册</td></tr>
+    <tr><td>R-01-02</td><td>资质认证</td><td>提交营业执照（或个体工商户身份证）+ 门店门头/店内照片 + 收货地址；审核通过后解锁拿货价与下单权限</td><td class="c"><span class="tag p0">P0</span></td><td>零售商 / 资质认证</td></tr>
+    <tr><td>R-01-03</td><td>价格可见性控制</td><td>未认证用户浏览商品时价格区显示"认证后可见"，购物车与下单入口置灰并引导认证</td><td class="c"><span class="tag p0">P0</span></td><td>零售商 / 商品详情</td></tr>
+    <tr><td>R-01-04</td><td>多门店与收货地址</td><td>支持一个主体下维护多门店地址，设置默认地址；下单按地址匹配运费与时效</td><td class="c"><span class="tag p1">P1</span></td><td>零售商 / 地址管理</td></tr>
+
+  </tbody>
+</table>
+<div class="note"><b>本期范围说明：</b>零售端不设会员等级体系，也不提供账期 / 授信支付。所有资质审核通过的零售商适用同一套阶梯价，下单须通过在线支付或对公转账完成；差异化定价与账期授信暂不纳入本平台范围。</div>
+
+<h3>R-02 选品与采购</h3>
+<table>
+  <thead><tr><th style="width:70px">编号</th><th style="width:130px">功能点</th><th>需求描述与业务规则</th><th style="width:60px">优先级</th><th style="width:130px">原型页面</th></tr></thead>
+  <tbody>
+    <tr><td>R-02-01</td><td>首页与导购</td><td>搜索框、三级类目导航、Banner 活动位、新品/热销/临期特惠/平台自营专区楼层</td><td class="c"><span class="tag p0">P0</span></td><td>零售商 / 首页</td></tr>
+    <tr><td>R-02-02</td><td>搜索与筛选</td><td>关键词（商品名/品牌/条码）搜索；筛选：类目、品牌、价格区间、发货地、是否自营、是否包邮、起订量；排序：综合/价格/销量/上新</td><td class="c"><span class="tag p0">P0</span></td><td>零售商 / 商品列表</td></tr>
+    <tr><td>R-02-03</td><td>商品详情</td><td>主图、标题、规格选择、<b>阶梯价表</b>、库存、MOQ、箱规、保质期、供应商资质与评分、服务承诺、详情图文、同类比价</td><td class="c"><span class="tag p0">P0</span></td><td>零售商 / 商品详情</td></tr>
+    <tr><td>R-02-04</td><td>购物车</td><td>按供应商/仓库分组展示（支持合并同供应商免运费凑单），修改数量、失效商品标识、勾选结算</td><td class="c"><span class="tag p0">P0</span></td><td>零售商 / 购物车</td></tr>
+  </tbody>
+</table>
+
+<h3>R-03 下单与支付</h3>
+<table>
+  <thead><tr><th style="width:70px">编号</th><th style="width:130px">功能点</th><th>需求描述与业务规则</th><th style="width:60px">优先级</th><th style="width:130px">原型页面</th></tr></thead>
+  <tbody>
+    <tr><td>R-03-01</td><td>确认订单</td><td>按供应商拆单；展示商品、阶梯价、运费、优惠、发票信息、收货地址、配送方式、买家备注；校验 MOQ 与库存</td><td class="c"><span class="tag p0">P0</span></td><td>零售商 / 确认订单</td></tr>
+    <tr><td>R-03-02</td><td>在线支付</td><td>微信支付、支付宝、对公转账（线下打款 + 上传凭证）、银行卡；支付超时 30 分钟自动关单</td><td class="c"><span class="tag p0">P0</span></td><td>零售商 / 收银台</td></tr>
+    <tr><td>R-03-03</td><td>支付结果</td><td>成功页展示订单号与预计发货时间；失败引导重新支付/更换方式；支持支付中断后继续支付</td><td class="c"><span class="tag p0">P0</span></td><td>零售商 / 支付结果</td></tr>
+    <tr><td>R-03-04</td><td>取消订单</td><td>未支付可直接取消；已支付未发货需供应商同意（或 48h 未发货自动同意）；已发货需走售后流程</td><td class="c"><span class="tag p0">P0</span></td><td>零售商 / 订单详情</td></tr>
+  </tbody>
+</table>
+
+<h3>R-04 物流、收货与售后</h3>
+<table>
+  <thead><tr><th style="width:70px">编号</th><th style="width:130px">功能点</th><th>需求描述与业务规则</th><th style="width:60px">优先级</th><th style="width:130px">原型页面</th></tr></thead>
+  <tbody>
+    <tr><td>R-04-01</td><td>物流查询</td><td>订单详情内嵌轨迹时间轴（揽收→运输→派送→签收），支持一键复制运单号、查看承运商；异常（滞留超 48h）高亮并提示联系客服</td><td class="c"><span class="tag p0">P0</span></td><td>零售商 / 物流查询</td></tr>
+    <tr><td>R-04-02</td><td>确认收货</td><td>手动确认收货；发货后 N 天（默认 15 天）自动确认，触发结算计时</td><td class="c"><span class="tag p0">P0</span></td><td>零售商 / 订单详情</td></tr>
+    <tr><td>R-04-03</td><td>售后申请</td><td>类型：仅退款（未发货/缺货）、退货退款（破损、临期、错发、质量问题）；必填原因说明 + 图片凭证；受售后时效（签收后 7 天）限制</td><td class="c"><span class="tag p0">P0</span></td><td>零售商 / 申请售后</td></tr>
+    <tr><td>R-04-04</td><td>售后进度</td><td>展示审核状态、退货物流、退款到账时间；供应商超时未处理可申请平台介入</td><td class="c"><span class="tag p0">P0</span></td><td>零售商 / 售后详情</td></tr>
+    <tr><td>R-04-05</td><td>客服咨询</td><td>在线 IM（机器人 + 人工转接）+ 工单提交，支持关联订单/商品，会话记录可回溯</td><td class="c"><span class="tag p0">P0</span></td><td>零售商 / 客服中心</td></tr>
+    <tr><td>R-04-06</td><td>发票与对账</td><td>申请电子发票（普票/专票）、查看开票记录；采购账单按月汇总导出</td><td class="c"><span class="tag p1">P1</span></td><td>零售商 / 发票管理</td></tr>
+  </tbody>
+</table>
+</section>
+
+<!-- 7 -->
+<section id="s7">
+<h2><span class="n">7</span>平台管理端功能需求（P）</h2>
+
+<h3>P-01 审核中心</h3>
+<table>
+  <thead><tr><th style="width:70px">编号</th><th style="width:130px">功能点</th><th>需求描述与业务规则</th><th style="width:60px">优先级</th><th style="width:130px">原型页面</th></tr></thead>
+  <tbody>
+    <tr><td>P-01-01</td><td>供应商入驻审核</td><td>详情页展示企业信息、资质材料（支持在线预览/放大）、工商信息核验结果、风控命中；操作：通过 / 驳回（选填原因，支持常见驳回模板）/ 退回补件；SLA 2 个工作日，超时红灯提醒</td><td class="c"><span class="tag p0">P0</span></td><td>平台 / 供应商审核</td></tr>
+    <tr><td>P-01-02</td><td>零售商资质审核</td><td>审核营业执照/门店照片真实性，通过后开通拿货价与下单权限；支持批量通过</td><td class="c"><span class="tag p0">P0</span></td><td>平台 / 零售商审核</td></tr>
+    <tr><td>P-01-03</td><td>商品上架审核</td><td>审核标题/主图/详情合规性、类目归属、价格合理性（与指导价、历史价对比）、资质与证照匹配；操作：通过 / 驳回 / 下架；支持批量操作与审核备注</td><td class="c"><span class="tag p0">P0</span></td><td>平台 / 商品审核</td></tr>
+    <tr><td>P-01-04</td><td>变更与价格审核</td><td>在售商品编辑（尤其价格上调 > 10%）需二次审核；记录价格变更轨迹供审计</td><td class="c"><span class="tag p1">P1</span></td><td>平台 / 商品审核</td></tr>
+    <tr><td>P-01-05</td><td>审核工作台</td><td>待办数量聚合、按类型/时长/类目筛选、审核绩效统计（人均处理量、平均时长）</td><td class="c"><span class="tag p1">P1</span></td><td>平台 / 工作台</td></tr>
+  </tbody>
+</table>
+
+<h3>P-02 商品与自营独代经营</h3>
+<table>
+  <thead><tr><th style="width:70px">编号</th><th style="width:130px">功能点</th><th>需求描述与业务规则</th><th style="width:60px">优先级</th><th style="width:130px">原型页面</th></tr></thead>
+  <tbody>
+    <tr><td>P-02-01</td><td>全量商品管理</td><td>跨供应商查询与治理：上下架、价格纠偏、类目迁移、违规下架、库存校正、打标（自营/推荐/临期）</td><td class="c"><span class="tag p0">P0</span></td><td>平台 / 商品管理</td></tr>
+    <tr><td>P-02-02</td><td>独代商品上传</td><td>平台自行创建独代商品：字段与供应商商品一致，<b>额外包含成本价、毛利率、独代协议编号、供应商（代工方）隐藏</b>；成本价仅财务/超管可见，前端展示"平台自营"标识</td><td class="c"><span class="tag p0">P0</span></td><td>平台 / 独代商品 - 新增</td></tr>
+    <tr><td>P-02-03</td><td>独代商品经营</td><td>定价与毛利试算（输入售价实时算毛利率）、库存与采购入库、上下架与排期、销售与毛利分析</td><td class="c"><span class="tag p0">P0</span></td><td>平台 / 独代商品管理</td></tr>
+    <tr><td>P-02-04</td><td>类目与属性管理</td><td>三级类目树维护、类目属性模板、类目资质要求配置（决定入驻与上架所需证照）</td><td class="c"><span class="tag p0">P0</span></td><td>平台 / 类目管理</td></tr>
+    <tr><td>P-02-05</td><td>价格监控</td><td>监控异常涨价、跨渠道低价扰乱、先涨后降；触发预警并可自动下架</td><td class="c"><span class="tag p2">P2</span></td><td>平台 / 价格监控</td></tr>
+  </tbody>
+</table>
+
+<h3>P-03 交易、物流与客服</h3>
+<table>
+  <thead><tr><th style="width:70px">编号</th><th style="width:130px">功能点</th><th>需求描述与业务规则</th><th style="width:60px">优先级</th><th style="width:130px">原型页面</th></tr></thead>
+  <tbody>
+    <tr><td>P-03-01</td><td>订单管理</td><td>全平台订单查询与详情；异常订单（超时未发货/未支付/物流异常）集中处理；支持强制关单、强制退款、修改收货地址</td><td class="c"><span class="tag p0">P0</span></td><td>平台 / 订单管理</td></tr>
+    <tr><td>P-03-02</td><td>支付与资金</td><td>收款流水、分账明细（货款/服务费/运费）、退款流水；支持担保交易模式（确认收货后再结算给供应商）</td><td class="c"><span class="tag p0">P0</span></td><td>平台 / 财务管理</td></tr>
+    <tr><td>P-03-03</td><td>结算与提现审核</td><td>生成供应商结算单、核对冲抵、审核提现申请、导出打款明细；需双人复核（制单/审核分离）</td><td class="c"><span class="tag p0">P0</span></td><td>平台 / 结算管理</td></tr>
+    <tr><td>P-03-04</td><td>物流管理</td><td>承运商与运费模板配置、电子面单、轨迹查询与异常预警（滞留/退回/签收异常）、时效达成率分析</td><td class="c"><span class="tag p0">P0</span></td><td>平台 / 物流管理</td></tr>
+    <tr><td>P-03-05</td><td>客服与工单</td><td>IM 会话池分配、工单创建/流转/SLA 提醒、常见问题知识库、机器人自动回复配置</td><td class="c"><span class="tag p0">P0</span></td><td>平台 / 客服工单</td></tr>
+    <tr><td>P-03-06</td><td>退款与仲裁</td><td>退款单列表与详情；审核供应商/零售商主张、查看凭证与聊天记录、判定责任方（供应商/平台/物流/零售商）、执行退款与结算冲抵、责任方扣分</td><td class="c"><span class="tag p0">P0</span></td><td>平台 / 退款管理</td></tr>
+  </tbody>
+</table>
+
+<h3>P-04 平台维护与运营</h3>
+<table>
+  <thead><tr><th style="width:70px">编号</th><th style="width:130px">功能点</th><th>需求描述与业务规则</th><th style="width:60px">优先级</th><th style="width:130px">原型页面</th></tr></thead>
+  <tbody>
+    <tr><td>P-04-01</td><td>内容与活动</td><td>Banner/楼层/公告/活动页配置，支持按角色与区域定向投放、上下线与排期</td><td class="c"><span class="tag p1">P1</span></td><td>平台 / 内容运营</td></tr>
+    <tr><td>P-04-02</td><td>规则与协议</td><td>维护入驻协议、交易规则、售后政策、违规处罚规则的版本管理与公示</td><td class="c"><span class="tag p1">P1</span></td><td>平台 / 规则中心</td></tr>
+    <tr><td>P-04-03</td><td>账号与权限</td><td>RBAC：角色创建、菜单与操作授权、数据范围（全部/品类/区域）；内部账号启停、登录双因子</td><td class="c"><span class="tag p0">P0</span></td><td>平台 / 账号权限</td></tr>
+    <tr><td>P-04-04</td><td>操作日志与审计</td><td>记录关键操作（审核、改价、强制退款、提现审核）的操作人、时间、前后值，支持追溯与导出，保留 ≥ 3 年</td><td class="c"><span class="tag p0">P0</span></td><td>平台 / 操作日志</td></tr>
+    <tr><td>P-04-05</td><td>数据大盘</td><td>GMV、下单/支付/履约转化、活跃零售商与供应商、独代商品占比与毛利、退款率、审核积压量；支持下钻与导出</td><td class="c"><span class="tag p0">P0</span></td><td>平台 / 数据大盘</td></tr>
+  </tbody>
+</table>
+</section>
+
+<!-- 8 -->
+<section id="s8">
+<h2><span class="n">8</span>公共与支撑能力（C）</h2>
+<table>
+  <thead><tr><th style="width:70px">编号</th><th style="width:130px">能力</th><th>需求描述与业务规则</th><th style="width:60px">优先级</th></tr></thead>
+  <tbody>
+    <tr><td>C-01</td><td>统一账号与登录</td><td>手机号 / 微信 / 账号密码；企业 UKey（可选）；登录态单点、异常登录风控、密码策略</td><td class="c"><span class="tag p0">P0</span></td></tr>
+    <tr><td>C-02</td><td>消息通知</td><td>站内信 + 短信 + 微信模板消息；场景：审核结果、订单状态、发货、退款进度、证照到期</td><td class="c"><span class="tag p0">P0</span></td></tr>
+    <tr><td>C-03</td><td>支付中台</td><td>聚合支付（微信/支付宝/银联）、对公转账核销；统一支付单、退款单、对账文件；资金担保与分账</td><td class="c"><span class="tag p0">P0</span></td></tr>
+    <tr><td>C-04</td><td>物流网关</td><td>对接主流快递/快运（顺丰、京东、中通、德邦等）与同城配送，统一查询与订阅推送；电子面单与运费试算</td><td class="c"><span class="tag p0">P0</span></td></tr>
+    <tr><td>C-05</td><td>搜索与推荐</td><td>商品索引、分词与同义词、搜索建议；推荐：热销、猜你喜欢、凑单推荐</td><td class="c"><span class="tag p1">P1</span></td></tr>
+    <tr><td>C-06</td><td>文件与图片</td><td>OSS 存储、图片压缩与水印、资质文件加密存储与访问鉴权（含访问水印与日志）</td><td class="c"><span class="tag p0">P0</span></td></tr>
+    <tr><td>C-07</td><td>风控与合规</td><td>资质有效期校验、异常下单（高频/大额/地址异常）、刷单识别、内容敏感词、价格异常、反洗钱（大额对公）</td><td class="c"><span class="tag p1">P1</span></td></tr>
+    <tr><td>C-08</td><td>客服体系</td><td>IM + 工单 + 机器人 + 电话热线入口；统一会话上下文（订单/商品/用户）</td><td class="c"><span class="tag p0">P0</span></td></tr>
+    <tr><td>C-09</td><td>数据埋点与报表</td><td>关键路径埋点（浏览→加购→下单→支付），漏斗分析，经营日报自动推送</td><td class="c"><span class="tag p1">P1</span></td></tr>
+  </tbody>
+</table>
+</section>
+
+<!-- 9 -->
+<section id="s9">
+<h2><span class="n">9</span>核心状态机定义</h2>
+
+<h3>9.1 资质审核状态</h3>
+<div class="flow">
+  <span class="node gray">未提交</span><span class="arw">→</span>
+  <span class="node blue">待审核</span><span class="arw">→</span>
+  <span class="node orange">审核中（核验/补件）</span><span class="arw">→</span>
+  <span class="node green">已通过</span><span class="arw">／</span>
+  <span class="node red">已驳回（可重提）</span><span class="arw">→</span>
+  <span class="node gray">资质过期 / 冻结</span>
+</div>
+
+<h3>9.2 商品状态</h3>
+<div class="flow">
+  <span class="node gray">草稿</span><span class="arw">→</span>
+  <span class="node blue">待审核</span><span class="arw">→</span>
+  <span class="node green">在售</span><span class="arw">↔</span>
+  <span class="node gray">已下架（供应商自主）</span>
+  <span class="arw">｜</span><span class="node red">审核驳回</span><span class="arw">｜</span>
+  <span class="node red">平台强制下架（违规）</span>
+</div>
+<p class="legend">※ 供应商与平台自营商品共用状态机；独代商品新增"内部复核"节点，通过后直接进入在售。</p>
+
+<h3>9.3 订单状态（主状态）</h3>
+<table>
+  <thead><tr><th style="width:130px">状态</th><th style="width:170px">触发条件</th><th>可执行动作</th></tr></thead>
+  <tbody>
+    <tr><td>待付款</td><td>提交订单成功</td><td>支付、取消订单、超时 30min 自动关闭</td></tr>
+    <tr><td>待接单</td><td>支付成功</td><td>供应商接单/拒单、超时 48h 预警并可强制退款</td></tr>
+    <tr><td>备货中</td><td>供应商已接单</td><td>发货、缺货协商</td></tr>
+    <tr><td>待发货</td><td>支付成功且未填运单</td><td>发货（回填承运商+运单号）</td></tr>
+    <tr><td>已发货</td><td>运单回填成功</td><td>查看物流；发货后 15 天自动确认收货</td></tr>
+    <tr><td>已签收 / 已完成</td><td>零售商确认或自动确认</td><td>评价、申请售后（7 天内）、开票、触发结算</td></tr>
+    <tr><td>退款中 / 已退款</td><td>售后通过</td><td>退货物流回填、平台退款、结算冲抵</td></tr>
+    <tr><td>已关闭</td><td>超时未付 / 取消 / 拒单</td><td>库存回滚，不可恢复</td></tr>
+  </tbody>
+</table>
+
+<h3>9.4 售后/退款状态</h3>
+<div class="flow">
+  <span class="node blue">待供应商处理</span><span class="arw">→</span>
+  <span class="node green">待买家退货</span><span class="arw">→</span>
+  <span class="node green">待卖家收货验货</span><span class="arw">→</span>
+  <span class="node orange">待平台退款</span><span class="arw">→</span>
+  <span class="node gray">退款成功</span>
+  <span class="arw">｜</span><span class="node red">已拒绝</span><span class="arw">→</span>
+  <span class="node orange">平台介入中</span><span class="arw">→</span>
+  <span class="node gray">仲裁完成</span>
+</div>
+
+<h3>9.5 结算状态</h3>
+<div class="flow">
+  <span class="node gray">待结算（担保中）</span><span class="arw">→</span>
+  <span class="node blue">可结算（T+N 到期）</span><span class="arw">→</span>
+  <span class="node orange">结算单待确认</span><span class="arw">→</span>
+  <span class="node orange">财务复核</span><span class="arw">→</span>
+  <span class="node green">已打款</span><span class="arw">→</span>
+  <span class="node gray">已开票</span>
+</div>
+</section>
+
+<!-- 10 -->
+<section id="s10">
+<h2><span class="n">10</span>数据模型（主要实体）</h2>
+<h3>10.1 实体关系概览</h3>
+<div class="flow">
+  <span class="node blue">供应商 Supplier</span><span class="arw">1:N</span>
+  <span class="node blue">商品 Product / SKU</span><span class="arw">1:N</span>
+  <span class="node orange">订单 Order / OrderItem</span><span class="arw">1:1</span>
+  <span class="node green">支付单 Payment</span>
+</div>
+<div class="flow">
+  <span class="node gray">零售商 Retailer</span><span class="arw">1:N</span>
+  <span class="node orange">订单 Order</span><span class="arw">1:N</span>
+  <span class="node green">物流单 Shipment</span><span class="arw">1:N</span>
+  <span class="node blue">售后单 AfterSale</span><span class="arw">1:1</span>
+  <span class="node red">退款单 Refund</span>
+</div>
+
+<h3>10.2 关键表结构（节选）</h3>
+<table>
+  <thead><tr><th style="width:140px">实体</th><th>主要字段</th></tr></thead>
+  <tbody>
+    <tr><td><b>supplier</b><br>供应商</td><td>id, 企业名, 统一社会信用代码, 类目范围[], 联系人, 手机, 资质材料[], 审核状态, 保证金, 评分, 结算方式(T+N/月结), 状态</td></tr>
+    <tr><td><b>retailer</b><br>零售商</td><td>id, 主体名, 门店列表[], 资质材料[], 认证状态, 默认地址, 状态</td></tr>
+    <tr><td><b>product</b><br>商品 SPU</td><td>id, 标题, 类目id(三级), 品牌, 供应商id / 平台自营标识, 主图[], 详情, 规格属性[], 产地, 保质期, 箱规, 状态(草稿/待审/在售/下架), 审核意见, 创建时间</td></tr>
+    <tr><td><b>sku</b><br>规格</td><td>id, spu_id, 规格值, 条形码, 供货价, 建议零售价, 阶梯价[{minQty,maxQty,price}], MOQ, 起订金额, 库存, 锁定库存, 成本价(仅自营), 重量/体积</td></tr>
+    <tr><td><b>order</b><br>订单</td><td>id, 订单号, 零售商id, 供应商id(按供应商拆单), 子订单号, 商品金额, 运费, 优惠, 实付, 支付方式, 状态, 收货地址快照, 发票信息, 时间节点{下单/支付/发货/签收}</td></tr>
+    <tr><td><b>shipment</b><br>物流单</td><td>id, 订单id, 承运商, 运单号, 包裹数, 发货时间, 轨迹[{时间,节点,地点}], 异常标记, 签收时间</td></tr>
+    <tr><td><b>payment</b><br>支付单</td><td>id, 订单id, 渠道, 交易流水号, 金额, 支付时间, 分账明细[{货款,服务费,运费}], 状态</td></tr>
+    <tr><td><b>after_sale</b><br>售后单</td><td>id, 订单id, sku_id, 类型(仅退款/退货退款), 原因, 凭证[], 数量, 退款金额, 状态, 责任方, 超时时间, 平台介入标记</td></tr>
+    <tr><td><b>settlement</b><br>结算单</td><td>id, 供应商id, 周期, 订单明细, 退款冲抵, 服务费, 运费, 应付金额, 状态, 打款时间, 发票状态</td></tr>
+    <tr><td><b>ticket</b><br>客服工单</td><td>id, 类型(咨询/投诉/售后), 关联订单id, 发起人角色, 处理人, 优先级, SLA, 会话记录[], 状态</td></tr>
+  </tbody>
+</table>
+<div class="warn"><b>数据权限：</b>成本价、供应商结算信息、零售商联系方式等敏感字段需在接口层按角色脱敏；资质文件采用私有读 + 临时签名 URL，访问带水印与日志。</div>
+</section>
+
+<!-- 11 -->
+<section id="s11">
+<h2><span class="n">11</span>页面清单与原型索引</h2>
+<p>配套交付可交互高保真原型：<a href="prototype/index.html"><code>prototype/index.html</code></a>（顶部角色切换：供应商 / 零售商 / 平台管理员；数据联动：下单 → 供应商发货 → 零售商查物流；审核 → 上架可见）。全站共 <b>36 个业务页面</b>，商品示意已整体替换为宠物用品业态。</p>
+<div class="card" style="border-left:3px solid #16a34a;padding:12px 16px;background:#f0fdf4;margin:12px 0"><b>公开访问（所有人可访问，无需登录）</b><br>本需求文档与配套可交互原型已发布为公开在线站点，链接可直接分享给项目组、供应商与零售商：<ul style="margin:8px 0 0;padding-left:20px"><li><a href="index.html">交付门户首页</a> —— 需求文档与原型的统一入口</li><li><a href="prototype/index.html">可交互产品原型</a> —— 三端 34 个页面，全部可点击跳转</li></ul><div class="small muted" style="margin-top:8px">原型为纯静态零依赖实现，演示数据保存在浏览器本地，顶栏可一键重置；文档与原型同源部署，相对链接在在线站点内同样有效。</div></div>
+<div class="card" style="border-left:3px solid #2563eb;padding:10px 14px;background:#eff6ff;margin:10px 0"><b>全站页面地图（每个页面都可点击跳转）</b>：入口页按三端分组列出全部页面链接，点击任一链接可直达对应页面；三端侧边栏底部与顶栏均提供「页面地图」入口，可随时返回。页面内的按钮、商品卡片、订单条目、审核条目、会话与工单均可点击交互，不是只有首页可点。</div>
+<table>
+  <thead><tr><th style="width:90px">角色</th><th style="width:150px">页面</th><th>主要交互</th></tr></thead>
+  <tbody>
+    <tr><td rowspan="8"><b>供应商</b></td><td>工作台</td><td>经营指标卡、待办（待发货/待审核/待处理售后）、公告</td></tr>
+    <tr><td>入驻申请 / 资质中心</td><td>分步表单、上传资质、提交审核、查看驳回原因并重提</td></tr>
+    <tr><td>商品管理 / 新增商品</td><td>列表筛选、新增/编辑商品（含阶梯价与库存）、提交审核、上下架</td></tr>
+    <tr><td>审核进度</td><td>查看商品审核状态与审核意见</td></tr>
+    <tr><td>订单管理 / 详情</td><td>接单、发货弹窗（承运商+运单号）、查看物流轨迹</td></tr>
+    <tr><td>售后管理</td><td>同意/拒绝售后申请，填写处理说明</td></tr>
+    <tr><td>结算中心</td><td>结算单列表、明细、申请提现与开票</td></tr>
+    <tr><td>客服中心</td><td>IM 对话（可发送消息）、常见问题、提交工单</td></tr>
+    <tr><td rowspan="8"><b>零售商</b></td><td>首页</td><td>搜索、类目、Banner、楼层推荐、自营专区</td></tr>
+    <tr><td>商品列表 / 详情</td><td>筛选排序；阶梯价表、规格选择、加购、立即下单；未认证时价格遮挡</td></tr>
+    <tr><td>购物车</td><td>按供应商分组、改数量、凑单提示、去结算</td></tr>
+    <tr><td>确认订单 / 收银台</td><td>地址选择、备注、支付方式、模拟支付成功</td></tr>
+    <tr><td>订单列表 / 详情</td><td>状态筛选、确认收货、申请售后、取消订单</td></tr>
+    <tr><td>物流查询</td><td>轨迹时间轴、异常提示、联系客服</td></tr>
+    <tr><td>售后（并入订单）</td><td>在「订单详情 / 订单列表」发起售后、上传凭证、查看进度、催办、撤销售后、申请平台介入</td></tr>
+    <tr><td>资质认证 / 客服中心</td><td>提交门店资质、查看认证状态；IM 对话与工单提交</td></tr>
+    <tr><td rowspan="9"><b>平台管理</b></td><td>数据大盘</td><td>核心指标、趋势图、待办与预警</td></tr>
+    <tr><td>审核中心</td><td>供应商入驻审核、零售商资质审核、商品上架审核（通过/驳回/批量）</td></tr>
+    <tr><td>商品管理</td><td>全平台商品治理、上下架、违规处理</td></tr>
+    <tr><td>独代商品管理</td><td>上传独代商品（含成本价与毛利试算）、上下架、销售分析</td></tr>
+    <tr><td>订单管理</td><td>全平台订单、异常订单处理、强制退款</td></tr>
+    <tr><td>退款管理</td><td>退款单审核、平台介入仲裁、责任判定</td></tr>
+    <tr><td>物流管理</td><td>承运商配置、轨迹查询、异常预警</td></tr>
+    <tr><td>客服工单</td><td>工单池、分配处理、回复</td></tr>
+    <tr><td>平台维护</td><td>Banner/公告、类目、账号权限、操作日志</td></tr>
+  </tbody>
+</table>
+</section>
+
+<!-- 12 -->
+<section id="s12">
+<h2><span class="n">12</span>非功能需求</h2>
+<table>
+  <thead><tr><th style="width:110px">类别</th><th>要求</th></tr></thead>
+  <tbody>
+    <tr><td>性能</td><td>列表页首屏 ≤ 1.5s（P95），详情 ≤ 2s；商品搜索响应 ≤ 500ms；支持 500 供应商 × 10 万 SKU 数据规模</td></tr>
+    <tr><td>可用性</td><td>核心交易链路可用性 ≥ 99.9%；支付与库存采用幂等设计；关键服务降级方案（物流查询不可用时展示静态轨迹）</td></tr>
+    <tr><td>安全</td><td>敏感数据加密存储（AES）、传输 HTTPS；资质图片私有读；接口鉴权 + 越权校验；管理员双因子；防刷与限流</td></tr>
+    <tr><td>合规</td><td>《电子商务法》主体资质公示；宠物饲料/兽药类目资质强校验；个人信息收集最小必要；电子合同存证</td></tr>
+    <tr><td>兼容性</td><td>Web（Chrome/Edge/Safari 近两年版本）；零售商端优先适配移动端 H5 与微信小程序；供应商与平台端适配 ≥ 1366px 分辨率</td></tr>
+    <tr><td>可扩展性</td><td>模块化：商品中心、交易中心、支付中心、履约中心、审核中心、客服中心，支持独立扩展与灰度</td></tr>
+    <tr><td>可观测性</td><td>关键操作日志与审计留痕 ≥ 3 年；业务告警（审核积压、退款超时、支付失败率、物流异常率）</td></tr>
+  </tbody>
+</table>
+</section>
+
+<!-- 13 -->
+<section id="s13">
+<h2><span class="n">13</span>分期规划与里程碑</h2>
+<table>
+  <thead><tr><th style="width:100px">阶段</th><th style="width:130px">范围</th><th>关键交付</th><th style="width:80px">优先级</th></tr></thead>
+  <tbody>
+    <tr><td><b>MVP<br>（第 1 期）</b></td><td>交易闭环</td><td>三方账号与资质审核、商品上架审核、商品浏览与阶梯价、购物车下单、在线支付、发货与物流查询、基础退款、客服工单</td><td class="c"><span class="tag p0">P0</span></td></tr>
+    <tr><td><b>第 2 期</b></td><td>经营深化</td><td>平台自营独代商品全流程、结算与提现、发票、评价体系、数据大盘、内容运营与活动</td><td class="c"><span class="tag p1">P1</span></td></tr>
+    <tr><td><b>第 3 期</b></td><td>智能与生态</td><td>智能补货推荐、价格监控与风控、开放 API（对接零售商 ERP/收银系统）、多仓与同城配、供应商金融服务</td><td class="c"><span class="tag p2">P2</span></td></tr>
+  </tbody>
+</table>
+<div class="note"><b>建议 MVP 验收口径：</b>完成「新供应商入驻 → 商品审核上架 → 新零售商认证 → 下单支付 → 供应商发货 → 零售商查轨迹并确认收货 → 发起退货退款 → 平台仲裁退款」全链路贯通。</div>
+</section>
+
+<!-- 14 -->
+<section id="s14">
+<h2><span class="n">14</span>附录：业务规则与风控配置</h2>
+<h3>14.1 关键规则默认值（可在平台端配置）</h3>
+<table>
+  <thead><tr><th style="width:190px">规则项</th><th style="width:110px">默认值</th><th>说明</th></tr></thead>
+  <tbody>
+    <tr><td>订单支付超时</td><td>30 分钟</td><td>超时自动关单并释放锁定库存</td></tr>
+    <tr><td>供应商接单时效</td><td>48 小时</td><td>超时预警、扣分，零售商可发起退款</td></tr>
+    <tr><td>自动确认收货</td><td>发货后 15 天</td><td>触发结算计时</td></tr>
+    <tr><td>售后申请时效</td><td>签收后 7 天</td><td>主粮/短保类目可单独配置（如 48 小时）</td></tr>
+    <tr><td>供应商处理售后时效</td><td>48 小时</td><td>超时自动同意零售商主张或进入平台介入</td></tr>
+    <tr><td>平台介入时效</td><td>72 小时</td><td>超时默认支持零售商并先行赔付</td></tr>
+    <tr><td>结算周期</td><td>T+7 / 月结</td><td>按供应商协议配置</td></tr>
+    <tr><td>平台服务费</td><td>按类目 1%-5%</td><td>在分账时扣除，结算单可查</td></tr>
+  </tbody>
+</table>
+<h3>14.2 风控规则（节选）</h3>
+<ul>
+  <li><b>价格异常：</b>上架价高于建议零售价、或 24h 内涨幅 &gt; 15% 时进入人工复核。</li>
+  <li><b>异常下单：</b>同一零售商 1 小时内 &gt; 10 单、单笔金额 &gt; 预设阈值（如 ¥50,000）、收货地址频繁变更 → 触发人工复核。</li>
+  <li><b>刷单识别：</b>供应商与零售商关联（同设备/同银行卡/同 IP 段）下单不计入销量与结算。</li>
+  <li><b>资质到期：</b>到期前 30 天提醒，到期当日限制新品上架，逾期 15 天冻结提现。</li>
+  <li><b>违规处罚：</b>售假/虚假发货/辱骂客服 → 扣分，累计达阈值下架商品、冻结店铺、终止合作。</li>
+</ul>
+<h3>14.3 待确认事项（Open Issues）</h3>
+<ol>
+  <li>是否引入担保交易（确认收货后再结算）作为默认模式，或按供应商协议差异化。</li>
+  <li>独代商品的仓储与发货由平台云仓执行，还是由代工供应商代发（影响物流与结算模型）。</li>
+  <li>是否需要对接零售商 ERP / 收银系统，以及开放 API 的范围与鉴权方式。</li>
+</ol>
+</section>
+
+<div class="foot">宠采通 · 宠物用品采购平台需求规格说明书 v1.3 · 公开访问 <a href="index.html">交付门户</a> · <a href="prototype/index.html">可交互原型</a></div>
+</main>
+</div>
+</body>
+</html>
