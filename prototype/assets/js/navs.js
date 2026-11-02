@@ -6,7 +6,7 @@
       {
         grp: '商品管理', items: [
           { k: 'products', t: '商品管理', ic: '📦', p: 'products', d: '在售 / 审核中 / 已驳回 / 已下架 商品列表，支持改价、调库存、上下架与提交审核。' },
-          { k: 'product-new', t: '新增商品', ic: '➕', p: 'product-new', d: '填写标题、类目、规格、阶梯价、库存、图片与售后说明，提交平台审核。' },
+          { k: 'product-new', t: '新增商品', ic: '➕', p: 'product-new', d: '填写标题、类目、规格、供货价、库存、图片与售后说明，提交平台审核。' },
           { k: 'audit', t: '审核进度', ic: '🔍', p: 'audit', badge: s => s.products.filter(p => p.supplierId === 'S01' && p.status === 'pending').length, d: '查看提交商品的平台审核状态、审核人与驳回原因，支持按原因修改后重新提交。' }
         ]
       },
@@ -51,7 +51,7 @@
         grp: '审核中心', items: [
           { k: 'audit-supplier', t: '供应商入驻', ic: '🏭', p: 'audit-supplier', badge: s => s.audits.supplier.filter(a => a.status === 'pending').length, d: '核验营业执照、生产许可证、品牌授权等材料，通过 / 驳回（含原因回填）与批量操作。' },
           { k: 'audit-retailer', t: '零售商资质', ic: '🏪', p: 'audit-retailer', badge: s => s.audits.retailer.filter(a => a.status === 'pending').length, d: '核验门店资质与经营场所，通过后开通拿货价可见与下单权限。' },
-          { k: 'audit-product', t: '商品上架', ic: '🔍', p: 'audit-product', badge: s => s.products.filter(p => p.status === 'pending').length, d: '审核商品标题/图片/规格/阶梯价/资质合规，通过后自动上架至前台。' }
+          { k: 'audit-product', t: '商品上架', ic: '🔍', p: 'audit-product', badge: s => s.products.filter(p => p.status === 'pending').length, d: '审核商品标题/图片/规格/供货价/资质合规，通过后自动上架至前台。' }
         ]
       },
       {

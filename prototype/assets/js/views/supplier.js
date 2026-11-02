@@ -59,12 +59,11 @@
         '<button class="' + (f.st === x[0] ? 'on' : '') + '" data-act="spFilter" data-st="' + x[0] + '">' + x[1] + '</button>').join('') + '</div>' +
       '<span class="muted right">经营品类：宠物主粮、宠物零食（新增品类需申报）</span></div>' +
       '<div class="card"><div class="tb-wrap"><table class="tb"><thead><tr>' +
-      '<th>商品</th><th class="c">类目</th><th class="r">供货价</th><th class="c">阶梯价</th><th class="c">MOQ</th><th class="c">库存</th><th class="c">状态</th><th class="c">销量</th><th class="c" style="width:190px">操作</th></tr></thead><tbody>' +
+      '<th>商品</th><th class="c">类目</th><th class="r">供货价</th><th class="c">MOQ</th><th class="c">库存</th><th class="c">状态</th><th class="c">销量</th><th class="c" style="width:190px">操作</th></tr></thead><tbody>' +
       (show.length ? show.map(p =>
         '<tr><td><div style="display:flex;gap:10px;align-items:center"><span style="font-size:24px">' + p.e + '</span>' +
         '<div><div style="font-weight:500">' + UI.esc(p.name) + '</div><div class="muted small">' + UI.esc(p.brand) + ' · ' + UI.esc(p.spec) + '</div></div></div></td>' +
         '<td class="c">' + p.cat + '</td><td class="r">¥' + UI.money(p.price) + '</td>' +
-        '<td class="c">' + (p.tiers.length > 1 ? '<span class="tag blue">' + p.tiers.length + ' 档</span>' : '-') + '</td>' +
         '<td class="c">' + p.moq + p.unit + '</td><td class="c">' + p.stock + '</td>' +
         '<td class="c">' + UI.prodTag(p.status) + '</td><td class="c">' + p.sales + '</td>' +
         '<td class="c">' +
@@ -72,7 +71,7 @@
         (p.status === 'onSale' ? '<button class="btn sm" data-act="spOff" data-id="' + p.id + '">下架</button> ' : '') +
         (p.status === 'off' ? '<button class="btn sm ok" data-act="spOn" data-id="' + p.id + '">上架</button> ' : '') +
         '<button class="btn sm" data-act="spEdit" data-id="' + p.id + '">编辑</button></td></tr>').join('')
-        : '<tr><td colspan="9">' + UI.empty('暂无符合筛选条件的商品') + '</td></tr>') +
+        : '<tr><td colspan="8">' + UI.empty('暂无符合筛选条件的商品') + '</td></tr>') +
       '</tbody></table></div></div>';
   };
   Act.register('spFilter', el => { window.__spFilter = window.__spFilter || { st: '', kw: '' }; window.__spFilter.st = el.getAttribute('data-st'); App.render(); });
@@ -90,8 +89,6 @@
       body: '<div class="fgrid"><div class="fld"><label>供货价（元）</label><input class="inp" id="ePrice" value="' + p.price + '"></div>' +
         '<div class="fld"><label>库存</label><input class="inp" id="eStock" value="' + p.stock + '"></div></div>' +
         '<div class="fld"><label>最小起订量 MOQ（' + p.unit + '）</label><input class="inp" id="eMoq" value="' + p.moq + '"></div>' +
-        '<div class="fld"><label>阶梯价（每档：数量下限 - 单价）</label>' +
-        p.tiers.map((t, i) => '<div style="display:flex;gap:8px;margin-bottom:6px"><input class="inp" value="' + t.min + '" data-tier="min" data-i="' + i + '"><input class="inp" value="' + (t.max || '') + '" placeholder="上限留空" data-tier="max" data-i="' + i + '"><input class="inp" value="' + t.p + '" data-tier="p" data-i="' + i + '"></div>').join('') +
         '</div><div class="note small">价格上调超过 10% 时需平台二次审核；编辑后商品需重新提交审核。</div>',
       footer: '<button class="btn" data-act="closeModal">取消</button><button class="btn pri" data-act="spSave" data-id="' + p.id + '">保存并提交审核</button>'
     });
@@ -101,12 +98,6 @@
     p.price = Number(document.getElementById('ePrice').value) || p.price;
     p.stock = Number(document.getElementById('eStock').value) || p.stock;
     p.moq = Number(document.getElementById('eMoq').value) || p.moq;
-    document.querySelectorAll('[data-tier]').forEach(inp => {
-      const i = Number(inp.getAttribute('data-i')), k = inp.getAttribute('data-tier');
-      if (k === 'p') p.tiers[i].p = Number(inp.value) || p.tiers[i].p;
-      else if (k === 'min') p.tiers[i].min = Number(inp.value) || p.tiers[i].min;
-      else p.tiers[i].max = inp.value ? Number(inp.value) : null;
-    });
     p.status = 'pending'; p.submitAt = U.now();
     Store.save(); UI.closeModal(); UI.toast('已保存并提交平台审核', 'ok'); App.render();
   });
@@ -141,12 +132,7 @@
       '<div class="fld"><label>发货地</label><input class="inp" id="nFrom" value="浙江杭州"></div>' +
       '<div class="fld"><label>承诺发货时效</label><select class="inp" id="nShip"><option>24小时内</option><option selected>48小时内</option><option>72小时内</option></select></div>' +
       '</div>' +
-      '<div class="fld"><label>阶梯价格（采购量越大价格越低）</label>' +
-      '<table class="tb" style="max-width:520px"><thead><tr><th>档位</th><th>数量区间</th><th>单价（元）</th></tr></thead><tbody>' +
-      '<tr><td>第 1 档</td><td><input class="inp sm" style="width:70px" value="1"> ~ <input class="inp" style="width:70px" value="49"></td><td><input class="inp" style="width:100px" id="t1" placeholder="28.5"></td></tr>' +
-      '<tr><td>第 2 档</td><td><input class="inp" style="width:70px" value="50"> ~ <input class="inp" style="width:70px" value="199"></td><td><input class="inp" style="width:100px" id="t2" placeholder="26.8"></td></tr>' +
-      '<tr><td>第 3 档</td><td><input class="inp" style="width:70px" value="200"> 以上</td><td><input class="inp" style="width:100px" id="t3" placeholder="24.9"></td></tr>' +
-      '</tbody></table></div>' +
+      '<div class="note small">本期统一按「供货价」销售，不设数量阶梯价；建议零售价用于零售商端毛利参考。</div>' +
       '</div></div>' +
       '<div class="card"><div class="card-hd"><h3>资质与售后</h3></div><div class="card-bd">' +
       '<div class="fgrid">' +
@@ -164,10 +150,9 @@
     const v = id => (document.getElementById(id) || {}).value || '';
     if (!v('nName')) { UI.toast('请填写商品标题', 'err'); return; }
     const price = Number(v('nPrice')) || 0;
-    const tiers = [{ min: 1, max: 49, p: Number(v('t1')) || price }, { min: 50, max: 199, p: Number(v('t2')) || price }, { min: 200, p: Number(v('t3')) || price }];
     S().products.unshift({
       id: 'P' + Date.now(), name: v('nName'), brand: v('nBrand') || '未填写', cat: v('nCat'), sub: v('nSub'), e: '📦',
-      spec: v('nSpec') || '-', unit: v('nUnit') || '件', price, retail: Number(v('nRetail')) || price * 1.3, tiers,
+      spec: v('nSpec') || '-', unit: v('nUnit') || '件', price, retail: Number(v('nRetail')) || price * 1.3,
       moq: Number(v('nMoq')) || 1, stock: Number(v('nStock')) || 0, sales: 0, supplierId: MY, supplierName: '宠悦宠物食品（杭州）有限公司',
       owner: 'supplier', status: 'pending', shelf: v('nShelf'), from: v('nFrom'), ship: v('nShip'), rate: 0, tag: '新品', submitAt: U.now()
     });
@@ -178,7 +163,7 @@
     S().products.unshift({
       id: 'P' + Date.now(), name: v('nName') || '未命名商品', brand: v('nBrand') || '-', cat: v('nCat'), sub: v('nSub'), e: '📦',
       spec: v('nSpec') || '-', unit: v('nUnit') || '件', price: Number(v('nPrice')) || 0, retail: Number(v('nRetail')) || 0,
-      tiers: [{ min: 1, p: Number(v('nPrice')) || 0 }], moq: Number(v('nMoq')) || 1, stock: Number(v('nStock')) || 0, sales: 0,
+      moq: Number(v('nMoq')) || 1, stock: Number(v('nStock')) || 0, sales: 0,
       supplierId: MY, supplierName: '宠悦宠物食品（杭州）有限公司', owner: 'supplier', status: 'draft', shelf: v('nShelf'), from: v('nFrom'), ship: v('nShip'), rate: 0, tag: ''
     });
     Store.save(); UI.toast('已保存为草稿'); App.go('supplier', 'products');

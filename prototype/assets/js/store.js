@@ -38,12 +38,8 @@
   const B = {
     product(pid) { return Store.s.products.find(p => p.id === pid); },
     order(id) { return Store.s.orders.find(o => o.id === id); },
-    /* 阶梯价 */
-    tierPrice(p, qty) {
-      const ts = p.tiers || [{ min: 1, p: p.price }];
-      for (const t of ts) { if (qty >= t.min && (!t.max || qty <= t.max)) return t.p; }
-      return ts[ts.length - 1].p;
-    },
+    /* 统一拿货价：本期不设阶梯价 / 多档定价，所有采购量按同一单价 */
+    priceOf(p) { return p.price; },
     cartAdd(pid, qty) {
       const s = Store.s, p = B.product(pid); if (!p) return;
       const ex = s.cart.find(c => c.pid === pid);
@@ -76,7 +72,7 @@
         const items = groups[k];
         let goods = 0;
         const its = items.map(it => {
-          const price = B.tierPrice(it.p, it.qty);
+          const price = B.priceOf(it.p);
           goods += price * it.qty;
           return { pid: it.p.id, name: it.p.name, e: it.p.e, spec: it.p.spec, price, qty: it.qty, unit: it.p.unit };
         });

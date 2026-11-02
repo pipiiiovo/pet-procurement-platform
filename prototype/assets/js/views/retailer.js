@@ -14,8 +14,7 @@
       (p.tag && !p.isSelf ? '<span class="tag orange" style="position:absolute;top:8px;left:8px">' + p.tag + '</span>' : '') + '</div>' +
       '<div class="bd"><div class="nm">' + UI.esc(p.name) + '</div>' +
       (lock ? '<div class="price-lock">🔒 资质认证后可见拿货价</div>'
-        : '<div class="pr"><small>¥</small>' + UI.money(B.tierPrice(p, p.moq)) + '<small> /' + p.unit + '</small>' +
-        (p.tiers.length > 1 ? '<span class="tag orange" style="margin-left:6px">' + p.tiers.length + ' 档阶梯</span>' : '') + '</div>' +
+        : '<div class="pr"><small>¥</small>' + UI.money(B.priceOf(p)) + '<small> /' + p.unit + '</small></div>' +
         '<div class="meta"><span>已售 ' + p.sales + '</span><span>MOQ ' + p.moq + p.unit + '</span><span>库存 ' + p.stock + '</span></div>' +
         '<div class="mt8"><button class="btn sm pri blk" data-act="rQuickAdd" data-id="' + p.id + '">加入购物车</button></div>') +
       '<div class="sup">' + (p.isSelf ? '宠采通平台自营 · ' + p.ship : UI.esc(p.supplierName)) + '</div>' +
@@ -43,7 +42,7 @@
       '<div class="prods">' + hot.map(card).join('') + '</div>' +
       '<div class="floor-hd"><h3>🆕 新品上架</h3><span class="muted">平台审核通过后即刻可见</span></div>' +
       '<div class="prods">' + ps.filter(p => p.tag === '新品').concat(ps.filter(p => !p.tag)).slice(0, 4).map(card).join('') + '</div>' +
-      '<div class="card mt16"><div class="card-bd small muted">💡 <b>演示提示：</b>点击商品查看详情与阶梯价 → 加入购物车（或使用右侧悬浮购物车按钮查看）→ 去结算 → 模拟支付；随后切换到<b>供应商端</b>可看到该订单并发货，回到本端「物流查询」即可看到轨迹。</div></div>';
+      '<div class="card mt16"><div class="card-bd small muted">💡 <b>演示提示：</b>点击商品查看详情与拿货价 → 加入购物车（或使用右侧悬浮购物车按钮查看）→ 去结算 → 模拟支付；随后切换到<b>供应商端</b>可看到该订单并发货，回到本端「物流查询」即可看到轨迹。</div></div>';
   };
   Act.register('homeSearch', () => { LF().kw = (document.getElementById('homeKw') || {}).value || ''; LF().page = 1; App.go('retailer', 'list'); });
   Act.register('rCat', el => {
@@ -82,12 +81,12 @@
 
     const grid = '<div class="prods">' + page.map(card).join('') + '</div>';
     const table = '<div class="card"><div class="tb-wrap"><table class="tb"><thead><tr>' +
-      '<th>商品</th><th class="c">品牌</th><th class="c">规格</th><th class="r">阶梯价</th><th class="c">MOQ</th><th class="c">库存</th><th class="c">销量</th><th class="c">供应商</th><th class="c">操作</th></tr></thead><tbody>' +
+      '<th>商品</th><th class="c">品牌</th><th class="c">规格</th><th class="r">拿货价</th><th class="c">MOQ</th><th class="c">库存</th><th class="c">销量</th><th class="c">供应商</th><th class="c">操作</th></tr></thead><tbody>' +
       (page.length ? page.map(p => '<tr><td><div style="display:flex;gap:10px;align-items:center"><span style="font-size:22px">' + p.e + '</span>' +
         '<div><div style="font-weight:500;cursor:pointer" data-act="rOpen" data-id="' + p.id + '">' + (p.isSelf ? '<span class="tag self">自营</span> ' : '') + UI.esc(p.name) + '</div>' +
         '<div class="muted small">' + p.cat + ' / ' + (p.sub || '-') + '</div></div></div></td>' +
         '<td class="c small">' + UI.esc(p.brand) + '</td><td class="c small">' + UI.esc(p.spec) + '</td>' +
-        '<td class="r">' + (certified() ? '¥' + UI.money(B.tierPrice(p, p.moq)) + (p.tiers.length > 1 ? ' <span class="tag blue">' + p.tiers.length + ' 档</span>' : '') : '<span class="muted">🔒 认证后可见</span>') + '</td>' +
+        '<td class="r">' + (certified() ? '¥' + UI.money(B.priceOf(p)) : '<span class="muted">🔒 认证后可见</span>') + '</td>' +
         '<td class="c">' + p.moq + p.unit + '</td><td class="c">' + p.stock + '</td><td class="c">' + p.sales + '</td>' +
         '<td class="c small">' + (p.isSelf ? '宠采通平台自营' : UI.esc(p.supplierName.slice(0, 10)) + '…') + '</td>' +
         '<td class="c"><button class="btn sm pri" data-act="rQuickAdd" data-id="' + p.id + '">加购</button> <button class="btn sm" data-act="rOpen" data-id="' + p.id + '">详情</button></td></tr>').join('')
@@ -144,9 +143,8 @@
   V['retailer/detail'] = function () {
     const p = B.product(window.__pid); if (!p) return '<div class="card"><div class="card-bd">' + UI.empty('商品不存在') + '</div></div>';
     const qty = window.__qty || p.moq;
-    const price = B.tierPrice(p, qty);
+    const price = B.priceOf(p);
     const lock = !certified();
-    const next = p.tiers.find(t => t.min > qty);
     return '<div class="page-head"><span class="crumb"><a href="#/retailer/home">首页</a> / <a href="#/retailer/list">' + p.cat + '</a> / ' + UI.esc(p.name.slice(0, 12)) + '…</span></div>' +
       '<div class="row">' +
       '<div style="width:320px;flex:0 0 320px"><div class="detail-pic">' + p.e + '</div>' +
@@ -164,10 +162,7 @@
         : '<div class="dt-price mt12"><div><span class="v">¥' + UI.money(price) + '</span><span class="muted"> /' + p.unit + '</span>' +
         '<span class="muted" style="margin-left:12px;text-decoration:line-through">零售价 ¥' + UI.money(p.retail) + '</span>' +
         '<div class="small" style="color:#15803d">毛利率约 ' + Math.round((p.retail - price) / p.retail * 100) + '%（按建议零售价测算）</div></div>' +
-        '<table class="tb tier-tb mt8" style="max-width:460px"><thead><tr><th>采购量</th><th>单价</th></tr></thead><tbody>' +
-        p.tiers.map(t => '<tr class="' + (qty >= t.min && (!t.max || qty <= t.max) ? 'hit' : '') + '"><td>' + t.min + (t.max ? ' ~ ' + t.max : ' 以上') + ' ' + p.unit + '</td><td>¥' + UI.money(t.p) + '</td></tr>').join('') +
-        '</tbody></table>' +
-        (next ? '<div class="small" style="color:#c2410c">再买 ' + (next.min - qty) + ' ' + p.unit + ' 可享 ¥' + UI.money(next.p) + '/' + p.unit + '，立省 ¥' + UI.money((price - next.p) * next.min) + '</div>' : '') +
+        '<div class="small muted mt8">全平台统一拿货价，不设数量阶梯，下单数量不影响单价。</div>' +
         '</div>') +
       '<div class="mt12"><span class="muted small">规格</span><div class="sku-pick mt8">' +
       '<span class="sku on">' + UI.esc(p.spec) + '</span></div></div>' +
@@ -213,13 +208,13 @@
     if (!c.length) return '<div class="card-bd">' + UI.empty('购物车是空的，去逛逛吧', '🛒') + '</div>';
     const groups = {};
     c.forEach(x => { const p = B.product(x.pid); if (!p) return; const k = p.supplierId; (groups[k] = groups[k] || []).push({ p, qty: x.qty }); });
-    let total = 0, saved = 0;
+    let total = 0;
     const html = Object.keys(groups).map(k => {
       const g = groups[k];
       let sum = 0;
       const rows = g.map(it => {
-        const price = B.tierPrice(it.p, it.qty);
-        sum += price * it.qty; saved += (it.p.price - price) * it.qty;
+        const price = B.priceOf(it.p);
+        sum += price * it.qty;
         return '<div class="ci"><div class="p">' + it.p.e + '</div><div class="n"><div class="t">' + UI.esc(it.p.name) + '</div>' +
           '<div class="s">' + it.p.spec + '　¥' + UI.money(price) + '/' + it.p.unit + '</div></div>' +
           '<div class="stepper"><button data-act="cMinus" data-id="' + it.p.id + '">−</button><input value="' + it.qty + '" data-change="cQty" data-id="' + it.p.id + '"><button data-act="cPlus" data-id="' + it.p.id + '">＋</button></div>' +
@@ -235,7 +230,6 @@
     return html +
       '<div class="card"><div class="card-bd">' +
       '<div class="between"><span class="muted">合计（不含运费）：</span><span style="color:#dc2626;font-size:20px;font-weight:800">¥' + UI.money(total) + '</span></div>' +
-      (saved > 0 ? '<div class="small" style="color:#15803d">阶梯价已为你节省 ¥' + UI.money(saved) + '</div>' : '') +
       '<div class="small muted mt8">结算时按供应商自动拆单，单店满 ¥1,000 免运费</div>' +
       '</div></div>';
   }
@@ -274,7 +268,7 @@
     const html = Object.keys(groups).map(k => {
       let sum = 0;
       const rows = groups[k].map(it => {
-        const price = B.tierPrice(it.p, it.qty); sum += price * it.qty;
+        const price = B.priceOf(it.p); sum += price * it.qty;
         return '<div class="ci"><div class="p">' + it.p.e + '</div><div class="n"><div class="t">' + UI.esc(it.p.name) + '</div><div class="s">' + it.p.spec + '</div></div>' +
           '<div class="muted small">¥' + UI.money(price) + ' × ' + it.qty + it.p.unit + '</div></div>';
       }).join('');

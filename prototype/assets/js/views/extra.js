@@ -32,7 +32,7 @@
       const name = k === 'PLATFORM' ? '👑 宠采通平台自营' : esc((s.suppliers.find(x => x.id === k) || {}).name || '');
       let sub = 0;
       const rows = list.map(({ p, c }) => {
-        const price = B.tierPrice(p, c.qty);
+        const price = B.priceOf(p);
         const amt = Math.round(price * c.qty * 100) / 100; sub += amt;
         return '<tr>' +
           '<td><div style="display:flex;align-items:center;gap:10px"><span style="font-size:26px">' + p.e + '</span>' +
@@ -61,7 +61,7 @@
       '<div class="small muted">商品金额 <b style="color:var(--t1)">¥ ' + UI.money(goods) + '</b>　运费 <b style="color:var(--t1)">¥ ' + UI.money(freight) + '</b></div>' +
       '<div style="font-size:15px">应付：<b style="color:var(--err);font-size:21px">¥ ' + UI.money(goods + freight) + '</b></div>' +
       '<button class="btn pri" data-act="cartCheckout">去结算 →</button></div>' +
-      '<div class="muted mt8">下单时按供应商自动拆单；阶梯价按本行数量实时匹配，改数量会重新计算。</div></div></div>';
+      '<div class="muted mt8">下单时按供应商自动拆单；单价为统一拿货价，改数量只影响小计金额。</div></div></div>';
   };
 
   Act.register('cartMinus', el => { const c = S().cart.find(x => x.pid === el.getAttribute('data-id')); if (!c) return; B.cartSet(c.pid, c.qty - 1); App.render(); });

@@ -178,7 +178,6 @@
         '<div style="flex:1"><dl class="kv">' +
         '<dt>商品标题</dt><dd>' + UI.esc(p.name) + '</dd><dt>品牌</dt><dd>' + UI.esc(p.brand) + '</dd><dt>类目</dt><dd>' + p.cat + ' / ' + (p.sub || '-') + '</dd>' +
         '<dt>规格</dt><dd>' + UI.esc(p.spec) + '</dd><dt>供货价</dt><dd>¥' + UI.money(p.price) + '</dd><dt>建议零售价</dt><dd>¥' + UI.money(p.retail) + '</dd>' +
-        '<dt>阶梯价</dt><dd>' + p.tiers.map(t => t.min + (t.max ? '~' + t.max : '+') + '：¥' + t.p).join('　') + '</dd>' +
         '<dt>MOQ / 库存</dt><dd>' + p.moq + p.unit + ' / ' + p.stock + '</dd><dt>发货地</dt><dd>' + p.from + '</dd><dt>时效</dt><dd>' + p.ship + '</dd>' +
         '<dt>供应商</dt><dd>' + UI.esc(p.supplierName) + '</dd><dt>成本价</dt><dd><span class="tag red">仅自营商品可见</span></dd>' +
         '</dl>' +
@@ -278,7 +277,6 @@
     S().products.unshift({
       id: 'D' + Date.now(), name: v('sfName'), brand: v('sfBrand') || '宠仓优选', cat: v('sfCat'), e: '👑',
       spec: v('sfSpec') || '-', unit: '箱', price, cost, retail: Number(v('sfRetail')) || price * 1.3,
-      tiers: [{ min: 1, max: 49, p: price }, { min: 50, p: Math.round(price * 0.93 * 100) / 100 }],
       moq: Number(v('sfMoq')) || 1, stock: Number(v('sfStock')) || 0, sales: 0,
       supplierId: 'PLATFORM', supplierName: '宠采通平台自营', owner: 'platform', status: 'onSale',
       shelf: '12个月', from: '平台云仓·杭州', ship: '24小时内', rate: 5, tag: '自营新品', isSelf: 1
