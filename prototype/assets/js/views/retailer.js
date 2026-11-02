@@ -162,7 +162,7 @@
         : '<div class="dt-price mt12"><div><span class="v">¥' + UI.money(price) + '</span><span class="muted"> /' + p.unit + '</span>' +
         '<span class="muted" style="margin-left:12px;text-decoration:line-through">零售价 ¥' + UI.money(p.retail) + '</span>' +
         '<div class="small" style="color:#15803d">毛利率约 ' + Math.round((p.retail - price) / p.retail * 100) + '%（按建议零售价测算）</div></div>' +
-        '<div class="small muted mt8">全平台统一拿货价，不设数量阶梯，下单数量不影响单价。</div>' +
+        '<div class="small muted mt8">全平台统一拿货价，下单数量不影响单价。</div>' +
         '</div>') +
       '<div class="mt12"><span class="muted small">规格</span><div class="sku-pick mt8">' +
       '<span class="sku on">' + UI.esc(p.spec) + '</span></div></div>' +

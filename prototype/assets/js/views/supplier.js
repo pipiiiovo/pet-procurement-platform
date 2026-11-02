@@ -132,7 +132,7 @@
       '<div class="fld"><label>发货地</label><input class="inp" id="nFrom" value="浙江杭州"></div>' +
       '<div class="fld"><label>承诺发货时效</label><select class="inp" id="nShip"><option>24小时内</option><option selected>48小时内</option><option>72小时内</option></select></div>' +
       '</div>' +
-      '<div class="note small">本期统一按「供货价」销售，不设数量阶梯价；建议零售价用于零售商端毛利参考。</div>' +
+      '<div class="note small">本期统一按「供货价」销售；建议零售价用于零售商端毛利参考。</div>' +
       '</div></div>' +
       '<div class="card"><div class="card-hd"><h3>资质与售后</h3></div><div class="card-bd">' +
       '<div class="fgrid">' +
